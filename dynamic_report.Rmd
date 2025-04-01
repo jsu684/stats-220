@@ -1,0 +1,149 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+body {
+  font-family: 'Helvetica Neue', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+h2 {
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.3em;
+}
+
+.plot-title {
+  text-align: center;
+  color: #7f8c8d;
+  margin: 20px 0;
+}
+
+.highlight {
+  color: #e74c3c;
+  font-weight: 600;
+}
+```
+
+## What's going on with this data?
+
+```{r}
+# Part D: Data Exploration
+# Load required packages
+library(tidyverse)
+library(lubridate)
+
+# Import data
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQkwClEkB_U3kQvzwhNwERT-uiQqZmempIP4ehI6cH99wZIDV3QGF8Jd-YfXB0rAsD6dMGXhZLNgbJd/pub?gid=997552583&single=true&output=csv") %>% 
+  rename(
+    genre = "1. Which music genre(s) do you listen to the most today?",
+    duration = "2. Duration of listening in a day (in minutes)?",
+    scenario = "3. In which scenario do you listen to music the most today?",
+    date = "4. Date of Today?"
+  ) %>% 
+  mutate(
+    date = dmy(date),
+    weekday = wday(date, label = TRUE, week_start = 1),
+    date_label = format(date, "%m/%d")  # Format date for plotting
+  )
+
+# Calculate summary statistics
+genre_summary <- logged_data %>% 
+  group_by(genre) %>% 
+  summarise(
+    avg_duration = round(mean(duration), 1),
+    min_duration = round(min(duration), 1),
+    max_duration = round(max(duration), 1),
+    total_sessions = n()
+  ) %>% 
+  arrange(desc(avg_duration))
+
+# Scenario distribution
+scenario_counts <- logged_data %>% 
+  count(scenario) %>% 
+  mutate(percentage = round(n / sum(n) * 100, 1))
+
+# Daily total duration
+daily_summary <- logged_data %>%
+  group_by(date_label) %>%
+  summarise(total_duration = sum(duration))
+
+# Generate visualizations
+genre_plot <- ggplot(genre_summary, aes(x = reorder(genre, total_sessions), y = total_sessions)) +
+  geom_col(fill = "#4E79A7") +
+  geom_text(aes(label = total_sessions), hjust = -0.2, color = "darkblue") +
+  labs(
+    title = "Music Genre Frequency Distribution",
+    x = "Genre",
+    y = "Number of Sessions"
+  ) +
+  coord_flip() +
+  theme_minimal()
+
+# Scenario distribution
+scenario_plot <- ggplot(scenario_counts, aes(x = reorder(scenario, percentage), y = percentage)) +
+  geom_col(fill = "#E15759") +
+  geom_text(aes(label = paste0(percentage, "%")), hjust = -0.2, color = "darkred") +
+  labs(
+    title = "Listening Scenario Distribution",
+    x = "Scenario",
+    y = "Percentage (%)"
+  ) +
+  coord_flip() +
+  theme_minimal()
+
+# Daily listening duration
+daily_plot <- ggplot(daily_summary, aes(x = reorder(date_label, as.Date(date_label, "%m/%d")), y = total_duration)) +
+  geom_bar(stat = "identity", fill = "#59A14F", width = 0.7) +
+  geom_text(aes(label = total_duration), vjust = -0.5, color = "darkgreen") +
+  labs(
+    title = "Daily Total Listening Duration",
+    x = "Date (MM/DD)",
+    y = "Total Minutes"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Display results
+genre_plot
+scenario_plot
+daily_plot
+
+```
+
+## Introduction
+This investigation focused on tracking daily music listening patterns over 21 consecutive days from March 10-30, 2025. The primary observation target was genre preferences across different daily scenarios, specifically analyzing how listening duration varies between commuting, work/study sessions, and relaxation periods.
+
+## Dynamic Report
+**My GitHub: [here, here, here!](https://github.com/jsu684/stats-220)**
+
+## Creativity  
+This project enhances data visualization by:  
+
+- **Cleaning and formatting data**: Converted dates and extracted weekdays for better analysis.  
+- **Summarizing music habits**: Calculated average, minimum, and maximum listening durations.  
+- **Visualizing trends**: Created clear bar charts for genres, scenarios, and daily listening time.  
+
+I improved **ggplot2 charts** by adding **labels, custom colors, and rotated text** for better readability.
+
+## Learning reflection
+One important idea that I learned from Module 2 is Creating Web-Based Dynamic Reporting Systems is the power of **automated and interactive data reporting**. Instead of generating static reports, I can use tools like **R Markdown** to create dynamic dashboards that update automatically when new data is available. This can improve efficiency and ensure reports remain relevant without manual updates. This fundamentally changed my understanding of data communication.  
+
+I am particularly curious about exploring **real-time data visualization** and **database integration**. I want to learn how to connect dashboards to live data sources, enabling instant updates. This will help create systems that provide up-to-the-minute information, making them invaluable for decision-making.
+
+## Appendix
+
+```{r file='exploration.R', eval=FALSE, echo=TRUE}
+
+```
+```{r file='dynamic_report.Rmd', eval=FALSE, echo=TRUE}
+
+```
