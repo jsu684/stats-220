@@ -117,33 +117,24 @@ genre_plot
 scenario_plot
 daily_plot
 
-```
+# dynamic comment
+dynamic_comment <- paste(
+  "The favourite music genre is", genre_summary$genre[1],
+  "with an average listening duration of", genre_summary$avg_duration[1], "minutes per session.",
+  "The most common listening scenario is", scenario_counts$scenario[which.max(scenario_counts$n)],
+  "which accounts for", max(scenario_counts$percentage), "% of total listening time."
+)
 
-## Introduction
-This investigation focused on tracking daily music listening patterns over 21 consecutive days from March 10-30, 2025. The primary observation target was genre preferences across different daily scenarios, specifically analyzing how listening duration varies between commuting, work/study sessions, and relaxation periods.
-
-## Dynamic Report
-**My GitHub: [here, here, here!](https://github.com/jsu684/stats-220)**
-
-## Creativity  
-This project enhances data visualization by:  
-
-- **Cleaning and formatting data**: Converted dates and extracted weekdays for better analysis.  
-- **Summarizing music habits**: Calculated average, minimum, and maximum listening durations.  
-- **Visualizing trends**: Created clear bar charts for genres, scenarios, and daily listening time.  
-
-I improved **ggplot2 charts** by adding **labels, custom colors, and rotated text** for better readability.
-
-## Learning reflection
-One important idea that I learned from Module 2 is Creating Web-Based Dynamic Reporting Systems is the power of **automated and interactive data reporting**. Instead of generating static reports, I can use tools like **R Markdown** to create dynamic dashboards that update automatically when new data is available. This can improve efficiency and ensure reports remain relevant without manual updates. This fundamentally changed my understanding of data communication.  
-
-I am particularly curious about exploring **real-time data visualization** and **database integration**. I want to learn how to connect dashboards to live data sources, enabling instant updates. This will help create systems that provide up-to-the-minute information, making them invaluable for decision-making.
-
-## Appendix
-
-```{r file='exploration.R', eval=FALSE, echo=TRUE}
 
 ```
-```{r file='dynamic_report.Rmd', eval=FALSE, echo=TRUE}
 
-```
+## My data source:  
+From March 10 2025 to March 30 2025, I collected music listening records from a music app. The dataset includes:  
+- **Daily listening duration** (total minutes listened each day)  
+- **Active time periods** (to analyze listening scenarios during different times of the day)  
+- **Top artists by listening duration** (used to infer preferred music genres based on the most-listened artists)
+
+I would like to explore the most-listened music genre by total playtime during the past 21 consecutive days.
+
+## Dynamic comment:
+`r dynamic_comment`
